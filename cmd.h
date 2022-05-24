@@ -346,3 +346,4 @@ static void sg_nfc_cmd_felica_encap() {
   }
   res.encap_len = res.payload_len;
 }
+
