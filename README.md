@@ -43,7 +43,6 @@ If you need to send to other ports and specific baud rates, you can modify [DTR-
 ### **Known Issues:**
 - The write Felica operation of the NDA_08 command was not implemented because it was not confirmed whether it would affect the subsequent use of the card.
 - Undetermined `res.status`, `res.status=1;` may be wrong
-- Because `get_fw` and `get_hw` return custom version numbers, amdaemon's firmware upgrade may be triggered at startup. You can rename or delete the aime_firm folder.
 - `mifare_select_tag` is not implemented, multi-card selection is not supported, only the first recognized card will be read
 
 
