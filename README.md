@@ -37,7 +37,7 @@ If you need to send to other ports and specific baud rates, you can modify [DTR-
 ### **Tested development boards:**
 - SparkFun Pro Micro (ATmega32u4), need to send DTR/RTS
 - SparkFun SAMD21 Dev Breakout（ATSAMD21G18）
-- NodeMCU 1.0（ESP-12E + CP2102 & CH340），SDA=D2，SCL=D1
+- NodeMCU 1.0（ESP-12E + CP2102 & CH340), SDA=D2, SCL=D1
 - NodeMCU-32S（ESP32-S + CH340）
 
 ### **Known Issues:**
