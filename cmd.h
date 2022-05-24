@@ -3,19 +3,18 @@
 CRGB leds[NUM_LEDS];
 
 #if defined(__AVR_ATmega32U4__) || defined(ARDUINO_SAMD_ZERO)
-#pragma message "Current development boards are ATmega32U4 or SAMD ZERO"
+#pragma message "The current development board is ATmega32U4 or SAMD_ZERO"
 #define SerialDevice SerialUSB
 #define LED_PIN A3
-#define PN532_SPI_SS 10 //32U4 Executing Read Without Encryption fails when GPU is not used
+#define PN532_SPI_SS 10 //When 32U4 does not use SPI, executing ReadWithoutEncryption will fail
 
 #elif defined(ARDUINO_ESP8266_NODEMCU_ESP12E)
-#pragma message "The current development board is NODEMCU_ESP12E"
+#pragma message "Current development board is NODEMCU_ESP12E"
 #define SerialDevice Serial
 #define LED_PIN D5
-//#define SwitchBaudPIN D4 //Change Baud Rate button
 
 #elif defined(ARDUINO_NodeMCU_32S)
-#pragma message "The current development board is NodeMCU_32S"
+#pragma message "Current development board is NodeMCU_32S"
 #define SerialDevice Serial
 #define LED_PIN 13
 #define PN532_SPI_SS 5
@@ -25,7 +24,7 @@ CRGB leds[NUM_LEDS];
 #endif
 
 #if defined(PN532_SPI_SS)
-#pragma message "Connect PN532 using SPI"
+#pragma message "Use SPI to connect to PN532"
 #include <SPI.h>
 #include <PN532_SPI.h>
 PN532_SPI pn532(SPI, PN532_SPI_SS);
@@ -52,8 +51,8 @@ enum {
   SG_NFC_CMD_MIFARE_READ_BLOCK    = 0x52,
   SG_NFC_CMD_MIFARE_SET_KEY_AIME  = 0x54,
   SG_NFC_CMD_AIME_AUTHENTICATE    = 0x55,
-  SG_NFC_CMD_UNKNOW0              = 0x60, /* maybe some stuff about AimePay*/
-  SG_NFC_CMD_UNKNOW1              = 0x61,
+  SG_NFC_CMD_TO_UPDATER_MODE      = 0x60,
+  SG_NFC_CMD_SEND_HEX_DATA        = 0x61,
   SG_NFC_CMD_RESET                = 0x62,
   SG_NFC_CMD_FELICA_ENCAP         = 0x71,
   SG_RGB_CMD_SET_COLOR            = 0x81,
@@ -105,7 +104,6 @@ typedef union packet_req {
         };
       };
     };
-    
   };
 } packet_req_t;
 
@@ -144,7 +142,7 @@ typedef union packet_res {
             uint8_t poll_systemCode[2];
           };
           struct {
-            uint8_t RW_status[2];//Guess, NDA 06, NDA 08
+            uint8_t RW_status[2];//Guess,NDA_06,NDA_08
             uint8_t numBlock;//NDA_06
             uint8_t blockData[1][1][16];//NDA_06
           };
@@ -158,7 +156,7 @@ typedef union packet_res {
 static packet_req_t req;
 static packet_res_t res;
 
-static void sg_res_init(uint8_t payload_len = 0) { //Initialization Template
+static void sg_res_init(uint8_t payload_len = 0) { //Initialization template
   res.frame_len = 6 + payload_len;
   res.addr = req.addr;
   res.seq_no = req.seq_no;
@@ -167,9 +165,9 @@ static void sg_res_init(uint8_t payload_len = 0) { //Initialization Template
   res.payload_len = payload_len;
 }
 
-static void sg_nfc_cmd_reset() { //Resets the Card Reader
+static void sg_nfc_cmd_reset() { //Reset the card reader
   nfc.begin();
-  nfc.setPassiveActivationRetries(0x01); //Sets the number of waiting times, 0xFF will wait forever
+  nfc.setPassiveActivationRetries(0x01); //Set the number of waits, 0xFF wait forever
   nfc.SAMConfig();
   if (nfc.getFirmwareVersion()) {
     nfc.SAMConfig();
@@ -182,18 +180,12 @@ static void sg_nfc_cmd_reset() { //Resets the Card Reader
 
 static void sg_nfc_cmd_get_fw_version() {
   sg_res_init(23);
-  //  memcpy(res.version, "TN32MSEC003S F/W Ver1.2", 23);
-  memcpy(res.version, "-> Sucareto Aime Reader", 23);
-  //  sg_res_init(1);
-  //  memset(res.version, 0x94, 1);
+  memcpy(res.version, "TN32MSEC003S F/W Ver1.2", 23);
 }
 
 static void sg_nfc_cmd_get_hw_version() {
   sg_res_init(23);
   memcpy(res.version, "TN32MSEC003S H/W Ver3.0", 23);
-  //  memcpy(res.version, "-> Sucareto Aime Reader", 23);
-  //  sg_res_init(9);
-  //  memcpy(res.version, "837-15396", 9);
 }
 
 static void sg_nfc_cmd_mifare_set_key_aime() {
@@ -208,7 +200,6 @@ static void sg_nfc_cmd_mifare_set_key_bana() {
 
 static void sg_led_cmd_reset() {
   sg_res_init();
-  FastLED.showColor(0);
 }
 
 static void sg_led_cmd_get_info() {
@@ -231,7 +222,7 @@ static void sg_nfc_cmd_radio_off() {
   nfc.setRFField(0x00, 0x00);
 }
 
-static void sg_nfc_cmd_poll() { //Card Number sent
+static void sg_nfc_cmd_poll() { //Card number sent
   uint16_t SystemCode;
   if (nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, res.mifare_uid, &res.id_len)) {
     sg_res_init(0x07);
@@ -288,7 +279,7 @@ static void sg_nfc_cmd_mifare_read_block() {//Read card sector data
 static void sg_nfc_cmd_felica_encap() {
   uint16_t SystemCode;
   if (nfc.felica_Polling(0xFFFF, 0x01, res.encap_IDm, res.poll_PMm, &SystemCode, 200) == 1) {
-    SystemCode = SystemCode >> 8 | SystemCode << 8;//SystemCode，reversed endianness note
+    SystemCode = SystemCode >> 8 | SystemCode << 8;//SystemCode，Reversed endianness note
   }
   else {
     sg_res_init();
@@ -308,7 +299,7 @@ static void sg_nfc_cmd_felica_encap() {
     case FELICA_CMD_GET_SYSTEM_CODE:
       {
         sg_res_init(0x0D);
-        res.felica_payload[0] = 0x01;//Unknown
+        res.felica_payload[0] = 0x01;//Guess
         res.felica_payload[1] = SystemCode;//SystemCode
         res.felica_payload[2] = SystemCode >> 8;
       }
@@ -336,7 +327,7 @@ static void sg_nfc_cmd_felica_encap() {
       break;
     case FELICA_CMD_NDA_08:
       {
-        sg_res_init(0x0C);//There should be a write card here, but it is not intended to be implemented
+        sg_res_init(0x0C);//There should be a write card here, but it's not going to be implemented
         res.RW_status[0] = 0;
         res.RW_status[1] = 0;
       }
@@ -347,4 +338,3 @@ static void sg_nfc_cmd_felica_encap() {
   }
   res.encap_len = res.payload_len;
 }
-
