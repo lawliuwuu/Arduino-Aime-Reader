@@ -155,3 +155,4 @@ void SerialCheck() {
       sg_res_init();
   }
 }
+
