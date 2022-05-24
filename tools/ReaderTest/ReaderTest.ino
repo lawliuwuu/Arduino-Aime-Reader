@@ -1,7 +1,7 @@
 #if defined(__AVR_ATmega32U4__) || defined(ARDUINO_SAMD_ZERO)
 #pragma message "Current development boards are ATmega32U4 or SAMD ZERO"
 #define SerialDevice SerialUSB
-#define PN532_SPI_SS 10 //32U4 不使用 SPI 时，执行 ReadWithoutEncryption 会失败
+#define PN532_SPI_SS 10 //When 32U4 does not use GPU, executing Read Without Encryption will fail
 
 #elif defined(ARDUINO_ESP8266_NODEMCU_ESP12E)
 #pragma message "The current development board is NODEMCU ESP12E"
