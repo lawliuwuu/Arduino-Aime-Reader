@@ -1,23 +1,23 @@
 #if defined(__AVR_ATmega32U4__) || defined(ARDUINO_SAMD_ZERO)
-#pragma message "当前的开发板是 ATmega32U4 或 SAMD_ZERO"
+#pragma message "Current development boards are ATmega32U4 or SAMD ZERO"
 #define SerialDevice SerialUSB
 #define PN532_SPI_SS 10 //32U4 不使用 SPI 时，执行 ReadWithoutEncryption 会失败
 
 #elif defined(ARDUINO_ESP8266_NODEMCU_ESP12E)
-#pragma message "当前的开发板是 NODEMCU_ESP12E"
+#pragma message "The current development board is NODEMCU ESP12E"
 #define SerialDevice Serial
 
 #elif defined(ARDUINO_NodeMCU_32S)
-#pragma message "当前的开发板是 NodeMCU_32S"
+#pragma message "The current development board is NodeMCU 32S"
 #define SerialDevice Serial
 #define PN532_SPI_SS 5
 
 #else
-#error "未经测试的开发板，请检查串口和阵脚定义"
+#error "Untested development board, please check the serial port and pin definitions"
 #endif
 
 #if defined(PN532_SPI_SS)
-#pragma message "使用 SPI 连接 PN532"
+#pragma message "Connect PN532 using SPI"
 #include <SPI.h>
 #include <PN532_SPI.h>
 PN532_SPI pn532(SPI, PN532_SPI_SS);
