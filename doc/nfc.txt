@@ -242,4 +242,3 @@ Addr 08 Command 81:
         None! Command is not acknowledged
     Description:
         Set LED color
-
