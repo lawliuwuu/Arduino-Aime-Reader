@@ -12,7 +12,7 @@ void setup() {
     FastLED.showColor(0);
     delay(500);
   }
-  nfc.setPassiveActivationRetries(0x10);//设定等待次数
+  nfc.setPassiveActivationRetries(0x10);//Set wait times
   nfc.SAMConfig();
   memset(&req, 0, sizeof(req.bytes));
   memset(&res, 0, sizeof(res.bytes));
@@ -21,7 +21,7 @@ void setup() {
   FastLED.showColor(high_baudrate ? 0x0000FF : 0x00FF00);
 
 #ifdef SwitchBaudPIN
-#pragma message "已启用波特率切换功能"
+#pragma message "Baud rate switching enabled"
   pinMode(SwitchBaudPIN, INPUT_PULLUP);
 #endif
 }
