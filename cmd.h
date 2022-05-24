@@ -3,29 +3,29 @@
 CRGB leds[NUM_LEDS];
 
 #if defined(__AVR_ATmega32U4__) || defined(ARDUINO_SAMD_ZERO)
-#pragma message "当前的开发板是 ATmega32U4 或 SAMD_ZERO"
+#pragma message "Current development boards are ATmega32U4 or SAMD ZERO"
 #define SerialDevice SerialUSB
 #define LED_PIN A3
-#define PN532_SPI_SS 10 //32U4 不使用 SPI 时，执行 ReadWithoutEncryption 会失败
+#define PN532_SPI_SS 10 //32U4 Executing Read Without Encryption fails when GPU is not used
 
 #elif defined(ARDUINO_ESP8266_NODEMCU_ESP12E)
-#pragma message "当前的开发板是 NODEMCU_ESP12E"
+#pragma message "The current development board is NODEMCU_ESP12E"
 #define SerialDevice Serial
 #define LED_PIN D5
-//#define SwitchBaudPIN D4 //修改波特率按钮
+//#define SwitchBaudPIN D4 //Change Baud Rate button
 
 #elif defined(ARDUINO_NodeMCU_32S)
-#pragma message "当前的开发板是 NodeMCU_32S"
+#pragma message "The current development board is NodeMCU_32S"
 #define SerialDevice Serial
 #define LED_PIN 13
 #define PN532_SPI_SS 5
 
 #else
-#error "未经测试的开发板，请检查串口和阵脚定义"
+#error "Untested development board, please check the serial port and pin definitions"
 #endif
 
 #if defined(PN532_SPI_SS)
-#pragma message "使用 SPI 连接 PN532"
+#pragma message "Connect PN532 using SPI"
 #include <SPI.h>
 #include <PN532_SPI.h>
 PN532_SPI pn532(SPI, PN532_SPI_SS);
@@ -88,7 +88,7 @@ typedef union packet_req {
         uint8_t encap_len;
         uint8_t encap_code;
         union {
-          struct { //FELICA_CMD_POLL，猜测
+          struct { //FELICA_CMD_POLL，Guess
             uint8_t poll_systemCode[2];
             uint8_t poll_requestCode;
             uint8_t poll_timeout;
@@ -98,7 +98,7 @@ typedef union packet_req {
             uint8_t numService;//and NDA_A4 unknown byte
             uint8_t serviceCodeList[2];
             uint8_t numBlock;
-            uint8_t blockList[1][2];//长度可变
+            uint8_t blockList[1][2];//Variable length
             uint8_t blockData[16];//WriteWithoutEncryption,ignore
           };
           uint8_t felica_payload[1];
@@ -143,7 +143,7 @@ typedef union packet_res {
             uint8_t poll_systemCode[2];
           };
           struct {
-            uint8_t RW_status[2];//猜测,NDA_06,NDA_08
+            uint8_t RW_status[2];//Guess, NDA 06, NDA 08
             uint8_t numBlock;//NDA_06
             uint8_t blockData[1][1][16];//NDA_06
           };
@@ -157,7 +157,7 @@ typedef union packet_res {
 static packet_req_t req;
 static packet_res_t res;
 
-static void sg_res_init(uint8_t payload_len = 0) { //初始化模板
+static void sg_res_init(uint8_t payload_len = 0) { //Initialization Template
   res.frame_len = 6 + payload_len;
   res.addr = req.addr;
   res.seq_no = req.seq_no;
@@ -166,9 +166,9 @@ static void sg_res_init(uint8_t payload_len = 0) { //初始化模板
   res.payload_len = payload_len;
 }
 
-static void sg_nfc_cmd_reset() { //重置读卡器
+static void sg_nfc_cmd_reset() { //Resets the Card Reader
   nfc.begin();
-  nfc.setPassiveActivationRetries(0x01); //设定等待次数,0xFF永远等待
+  nfc.setPassiveActivationRetries(0x01); //Sets the number of waiting times, 0xFF will wait forever
   nfc.SAMConfig();
   if (nfc.getFirmwareVersion()) {
     nfc.SAMConfig();
@@ -230,7 +230,7 @@ static void sg_nfc_cmd_radio_off() {
   nfc.setRFField(0x00, 0x00);
 }
 
-static void sg_nfc_cmd_poll() { //卡号发送
+static void sg_nfc_cmd_poll() { //Card Number sent
   uint16_t SystemCode;
   if (nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, res.mifare_uid, &res.id_len)) {
     sg_res_init(0x07);
@@ -275,7 +275,7 @@ static void sg_nfc_cmd_bana_authenticate() {
   }
 }
 
-static void sg_nfc_cmd_mifare_read_block() {//读取卡扇区数据
+static void sg_nfc_cmd_mifare_read_block() {//Read card sector data
   if (nfc.mifareclassic_ReadDataBlock(req.block_no, res.block)) {
     sg_res_init(0x10);
     return;
@@ -287,7 +287,7 @@ static void sg_nfc_cmd_mifare_read_block() {//读取卡扇区数据
 static void sg_nfc_cmd_felica_encap() {
   uint16_t SystemCode;
   if (nfc.felica_Polling(0xFFFF, 0x01, res.encap_IDm, res.poll_PMm, &SystemCode, 200) == 1) {
-    SystemCode = SystemCode >> 8 | SystemCode << 8;//SystemCode，大小端反转注意
+    SystemCode = SystemCode >> 8 | SystemCode << 8;//SystemCode，reversed endianness note
   }
   else {
     sg_res_init();
@@ -307,7 +307,7 @@ static void sg_nfc_cmd_felica_encap() {
     case FELICA_CMD_GET_SYSTEM_CODE:
       {
         sg_res_init(0x0D);
-        res.felica_payload[0] = 0x01;//未知
+        res.felica_payload[0] = 0x01;//Unknown
         res.felica_payload[1] = SystemCode;//SystemCode
         res.felica_payload[2] = SystemCode >> 8;
       }
@@ -320,7 +320,7 @@ static void sg_nfc_cmd_felica_encap() {
       break;
     case FELICA_CMD_NDA_06:
       {
-        uint16_t serviceCodeList[1] = {(uint16_t)(req.serviceCodeList[1] << 8 | req.serviceCodeList[0])};//大小端反转注意
+        uint16_t serviceCodeList[1] = {(uint16_t)(req.serviceCodeList[1] << 8 | req.serviceCodeList[0])};//Reversed endianness note
         for (uint8_t i = 0; i < req.numBlock; i++) {
           uint16_t blockList[1] = {(uint16_t)(req.blockList[i][0] << 8 | req.blockList[i][1])};
           if (nfc.felica_ReadWithoutEncryption(1, serviceCodeList, 1, blockList, res.blockData[i]) != 1) {
@@ -335,7 +335,7 @@ static void sg_nfc_cmd_felica_encap() {
       break;
     case FELICA_CMD_NDA_08:
       {
-        sg_res_init(0x0C);//此处应有写入卡，但是不打算实现
+        sg_res_init(0x0C);//There should be a write card here, but it is not intended to be implemented
         res.RW_status[0] = 0;
         res.RW_status[1] = 0;
       }
