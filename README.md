@@ -1,6 +1,6 @@
 # **Arduino-Aime-Reader**
 **All the main features are implemented now, so if there are no more bugs there should be no more updates.**
-中文:https://github.com/Sucareto/Arduino-Aime-Reader
+中文: [Sucareto/Arduino-Aime-Reader](https://github.com/Sucareto/Arduino-Aime-Reader)
 
 Aime compatible card reader made using Arduino + PN532 + WS2812B.
 Supported card types: [FeliCa](https://en.wikipedia.org/wiki/FeliCa) (Amusement IC, Suica, Octopus, etc.) and [MIFARE](https://en.wikipedia.org/wiki/MIFARE) (Aime, Banapassport).
