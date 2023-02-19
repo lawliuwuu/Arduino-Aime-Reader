@@ -6,7 +6,7 @@
 Aime compatible card reader made using Arduino + PN532 + WS2812B.
 Supported card types: [FeliCa](https://en.wikipedia.org/wiki/FeliCa) (Amusement IC, Suica, Octopus, etc.) and [MIFARE](https://en.wikipedia.org/wiki/MIFARE) (Aime, Banapassport).
 The implementation logic is the official card reader serial port data comparison + brain compensation, the correct implementation is not guaranteed.
-TThe communication data format is referenced from [Segatools](https://github.com/rakisaionji/segatools) and the official card reader packet capture data, which can be viewed at [example.txt](doc/example.txt) and [nfc.txt](doc/nfc.txt).
+The communication data format is referenced from [Segatools](https://github.com/rakisaionji/segatools) and the official card reader packet capture data, which can be viewed at [example.txt](doc/example.txt) and [nfc.txt](doc/nfc.txt).
 An example on how one could use this: [ESP32-CardReader](https://github.com/Sucareto/ESP32-CardReader)
 
 
