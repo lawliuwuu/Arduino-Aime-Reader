@@ -34,10 +34,18 @@ If you need to send to other ports and specific baud rates, you can modify [DTR-
 | SBZV/SDDF | COM10 | FeliCa,MIFARE | 38400 |
 | SDBT | COM12 | FeliCa,MIFARE | 38400 |
 
+### **Game ID Reference:**
+| Game ID | Game Name |
+| - | - |
+| SDDT/SDEZ | ONGEKI, maimai/maimaiでらくっす |
+| SDEY | maimai FiNALE |
+| SDHD | CHUNITHM (ALLS) |
+| SBZV/SDDF | Project DIVA, Initial D |
+| SDBT | CHUNTIHM (Nu) |
+
 - If the card reader is not working properly, you can switch the baud rate to try and fix it.
 - If you are using amdaemon, you can refer to aime > unit > port in config_common.json to confirm the port number.
 - If `"high_baudrate": true`, then the baud rate is `115200`, otherwise it is `38400`.
-
 
 ### **Tested Development Boards:**
 - SparkFun Pro Micro (ATmega32u4), need to send DTR/RTS
