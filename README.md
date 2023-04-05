@@ -52,7 +52,7 @@ If you need to send to other ports and specific baud rates, you can modify [DTR-
 
 
 ### **Reference Library:**
-- Driver WS2812B: [FastLED](https://github.com/FastLED/FastLE )
+- Driver WS2812B: [FastLED](https://github.com/FastLED/FastLED)
 - Driver PN532: [PN532](https://github.com/elechouse/PN532)
 - Reference for reading FeliCa data: [How to read FeliCa student ID card with Arduino using PN532](https://qiita.com/gpioblink/items/91597a5275862f7ffb3c)
 - Program for reading FeliCa data: [NFC TagInfo](https://play.google.com/store/apps/details?id=at.mroland.android.apps.nfctaginfo), [NFC TagInfo by NXP](https://play.google.com/store/apps/details?id=com.nxp.taginfolite)
