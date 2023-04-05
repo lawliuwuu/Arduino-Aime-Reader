@@ -37,7 +37,7 @@ If you need to send to other ports and specific baud rates, you can modify [DTR-
 ### **Game ID Reference:**
 | Game ID | Game Name |
 | - | - |
-| SDDT/SDEZ | ONGEKI, maimai/maimaiでらくっす |
+| SDDT/SDEZ | ONGEKI, maimaiでらくっす |
 | SDEY | maimai FiNALE |
 | SDHD | CHUNITHM (ALLS) |
 | SBZV/SDDF | Project DIVA, Initial D |
